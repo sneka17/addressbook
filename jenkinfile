@@ -19,7 +19,7 @@ pipeline{
                }
            }
            stage("UNITTEST"){
-               agent {label 'ec2_slave3'}
+               agent any
                when{
                    expression{
                        executeTests == true
