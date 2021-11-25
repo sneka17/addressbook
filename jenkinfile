@@ -20,6 +20,11 @@ pipeline{
            }
            stage("UNITTEST"){
                agent {label 'ec2_slave3'}
+               when{
+                   expression{
+                       executeTests == true
+                   }
+               }
                steps{
                    script{
                        echo "testing the code"
@@ -46,7 +51,7 @@ pipeline{
                steps{
                    script{
                        echo "Deploying the code"
-                       echo "Deploying version is ${params.version}"
+                       echo "Deploying version is $version"
                    }
                }
            }
