@@ -1,3 +1,27 @@
+pipeline {
+    options {
+        timeout(time: 1, unit: 'HOURS')
+    }
+    agent {
+        label 'ubuntu-1804 && amd64 && docker'
+    }
+    stages {
+        stage('build and push') {
+            when {
+                branch 'master'
+            }
+            sh "docker build -t docker/getting-started ."
+
+            steps {
+                withDockerRegistry([url: "", credentialsId: "dockerbuildbot-index.docker.io"]) {
+                    sh("docker push docker/getting-started")
+                }
+            }
+        }
+    }
+}
+
+
 pipeline{
     agent none
     tools{
@@ -46,8 +70,32 @@ pipeline{
                    }
                }
            }
+           stage("BUILD THE DOCKER IMAGE"){
+               agent any
+               when{
+                   expression{
+                       BRANCH_NAME == 'master'
+                   }
+               }
+               steps{
+                   script{
+                       echo "Building the docker image"
+                       echo "Deploying version is $version"
+                       withCredentials([usernamePassword(credentialsId: 'docker hub credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                       sh 'sudo docker build -t sneka/addressbook:$BUILD_NUMBER .'
+                       sh 'sudo docker login -u $USERNAME -p $PASSWORD'
+                       sh 'sudo docker push sneka/addressbook:$BUILD_NUMBER'
+                       }
+                   }
+               }
+           }
            stage("DEPLOY"){
                agent any
+               when{
+                   expression{
+                       BRANCH_NAME == 'master'
+                   }
+               }
                steps{
                    script{
                        echo "Deploying the code"
