@@ -48,11 +48,7 @@ pipeline{
            }
            stage("BUILD THE DOCKER IMAGE"){
                
-               when{
-                   expression{
-                       BRANCH_NAME == 'master'
-                   }
-               }
+              
                steps{
                    script{
                        echo "Building the docker image"
