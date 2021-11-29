@@ -1,5 +1,5 @@
 pipeline{
-    agent none
+    agent any
     tools{
         jdk "JDK"
         maven "Apache Maven"
@@ -10,7 +10,7 @@ pipeline{
     }
     stages{
            stage("COMPILE"){
-               agent {label 'ec2_slave3'}
+               
                steps{
                    script{
                        echo "Compiling the code"
@@ -19,7 +19,7 @@ pipeline{
                }
            }
            stage("UNITTEST"){
-               agent {label 'ec2_slave3'}
+               
                when{
                    expression{
                        executeTests == true
@@ -38,7 +38,7 @@ pipeline{
                }
            }
            stage("PACKAGE"){
-               agent {label 'ec2_slave3'}
+               
                steps{
                    script{
                        echo "Packaging the code"
@@ -47,7 +47,7 @@ pipeline{
                }
            }
            stage("BUILD THE DOCKER IMAGE"){
-               agent any
+               
                when{
                    expression{
                        BRANCH_NAME == 'master'
@@ -67,11 +67,7 @@ pipeline{
            }
            stage("DEPLOY"){
                agent any
-               when{
-                   expression{
-                       BRANCH_NAME == 'master'
-                   }
-               }
+              
                steps{
                    script{
                        echo "Deploying the code"
