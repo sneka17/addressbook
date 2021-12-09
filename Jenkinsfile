@@ -70,7 +70,7 @@ pipeline{
                steps{
                    script{
                        echo "Deploying the image on k8s"
-                       sh 'envsubst < kubernetes/deploy.yml | sudo /usr/bin/kubectl apply -f deploy.yml -'
+                       sh 'envsubst < kubernetes/deploy.yml | sudo /usr/bin/kubectl apply -f -'
                    }
                }
            }
