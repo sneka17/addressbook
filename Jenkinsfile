@@ -4,6 +4,9 @@ pipeline{
         jdk "JDK"
         maven "Apache Maven"
     }
+    environment{
+       APP_NAME='java-mvn-app'
+       }
     parameters{
         choice(name:'version',choices:['1.1.0','1.2.0','1.3.0'],description:'version of the code')
         booleanParam(name:'executeTests',defaultValue:true,description:'tc validation')
@@ -66,8 +69,8 @@ pipeline{
               
                steps{
                    script{
-                       echo "Deploying the code"
-                       echo "Deploying version is $version"
+                       echo "Deploying the image on k8s"
+                       sh 'envsubst < java-mvn-deploy-svc.yml | sudo /usr/local/bin/kubectl apply -f -'
                    }
                }
            }
